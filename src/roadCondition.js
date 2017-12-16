@@ -1,6 +1,6 @@
 const utils = require('./utils');
 
-const getRoadCondition = (lat, lng) => {
+const getRoadCondition = (start, end) => {
     return {
         traffic: utils.generateData(100),
         curve: utils.generateData(180),

@@ -1,6 +1,6 @@
 const utils = require('./utils');
 
-const getRoadAccidents = (lat, lng) => {
+const getRoadAccidents = (start, end) => {
     return {
         numOfAccidents: utils.generateData(5),
     };

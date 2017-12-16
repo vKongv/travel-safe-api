@@ -16,19 +16,26 @@ app.listen(8080, () => {
 
 app.post('/safety', (req, res, next) => {
     const stepsWithSafetyMetric = req.body.steps.map((step) => {
-        const { lat, lng } = step;
-        const currentWeather = weather.getWeather(lat, lng);
-        const currentRoadCondition = roadCondition.getRoadCondition(lat, lng);
-        const currentRoadAccidents = roadAccident.getRoadAccidents(lat, lng)
-        return {
+        const { lat, lng } = step.start;        
+        console.log(`Calculating lat: ${lat}, lng: ${lng}`);
+        console.log(`-------------------------------------`);
+        const currentWeather = weather.getWeather(step.start, step.end);
+        const currentRoadCondition = roadCondition.getRoadCondition(step.start, step.end);
+        const currentRoadAccidents = roadAccident.getRoadAccidents(step.start, step.end);
+        const weatherMetric = parseFloat(utils.calcWeatherMetric(currentWeather).toFixed(2));
+        const roadConditionMetric = parseFloat(utils.calcRoadConditionMetric(currentRoadCondition, currentRoadAccidents.numOfAccidents).toFixed(2));
+        const overallMetric = parseFloat(((weatherMetric + roadConditionMetric) / 2).toFixed(2));
+        const newStep = {
             ...step,
             safetyMetric: {
-                overall: 1,
-                weather: parseFloat(utils.calcWeatherMetric(currentWeather).toFixed(2)),
-                roadCondition: parseFloat(utils.calcRoadConditionMetric(currentRoadCondition, currentRoadAccidents.numOfAccidents).toFixed(2)),
+                overall: overallMetric,
+                weather: weatherMetric,
+                roadCondition: roadConditionMetric,
                 accidentRate: currentRoadAccidents,
             }
         };
+        console.log(`-------------------------------------`);
+        return newStep;
     });
     res.json(stepsWithSafetyMetric);
 });
