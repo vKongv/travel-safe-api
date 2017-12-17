@@ -31,7 +31,7 @@ app.post('/safety', (req, res, next) => {
                 overall: overallMetric,
                 weather: weatherMetric,
                 roadCondition: roadConditionMetric,
-                accidentRate: currentRoadAccidents,
+                accidentRate: currentRoadAccidents.numOfAccidents,
             }
         };
         console.log(`-------------------------------------`);
